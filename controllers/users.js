@@ -12,11 +12,30 @@ module.exports.findById = (req, res) => {
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
-// module.exports.updateUser = (req, res) => {
-//   User.findByIdAndUpdate(req.params.id, { name: "Виктор Гусев" })
-//     .then((user) => res.send({ data: user }))
-//     .catch((err) => res.status(500).send({ message: err.message }));
-// };
+module.exports.updateUser = (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: req.body.name,
+      about: req.body.about,
+    },
+    { new: true }
+  )
+    .then((user) => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.updateAvatar = (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      avatar: req.body.avatar,
+    },
+    { new: true }
+  )
+    .then((user) => res.send({ data: user }))
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
