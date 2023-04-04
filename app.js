@@ -14,10 +14,17 @@ mongoose
   .then(() => console.log("DB is connected"))
   .catch((err) => console.log(err));
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: "642c0bf809c98eefc507db63",
+  };
+
+  next();
+});
+
 app.use("/users", require("./routes/users"));
+app.use("/cards", require("./routes/cards"));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-
-//"_id": "642c0bf809c98eefc507db63",
