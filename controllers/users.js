@@ -33,6 +33,10 @@ module.exports.findById = (req, res) => {
   User.find(req.params.id)
     .then((user) => res.send({ data: user }))
     .catch((err) => {
+      if (err.name === "ValidationError")
+        return res.status(ERROR_VALIDATION).send({
+          message: "Передан некорректный _id",
+        });
       if (err.name === "CastError")
         return res
           .status(ERROR_ID)
@@ -50,8 +54,7 @@ module.exports.updateUser = (req, res) => {
       name: req.body.name,
       about: req.body.about,
     },
-    { new: true },
-    { runValidators: true }
+    { new: true, runValidators: true }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
@@ -75,8 +78,7 @@ module.exports.updateAvatar = (req, res) => {
     {
       avatar: req.body.avatar,
     },
-    { new: true },
-    { runValidators: true }
+    { new: true, runValidators: true }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {

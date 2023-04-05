@@ -37,6 +37,10 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.send({ data: card }))
     .catch((err) => {
+      if (err.name === "ValidationError")
+        return res.status(ERROR_VALIDATION).send({
+          message: "Переданы некорректные данные при удалении карточки",
+        });
       if (err.name === "CastError")
         return res
           .status(ERROR_ID)
