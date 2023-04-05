@@ -66,10 +66,6 @@ module.exports.updateUser = (req, res) => {
         return res.status(ERROR_BAD_REQUEST).send({
           message: "Переданы некорректные данные при обновлении профиля",
         });
-      // if (err.name === "CastError")
-      //   return res
-      //     .status(ERROR_NOT_FOUND)
-      //     .send({ message: "Пользователь с указанным _id не найден" });
       res
         .status(OTHER_ERROR)
         .send(`Произошла неизвестная ошибка ${err.name}: ${err.message}`);
@@ -90,10 +86,6 @@ module.exports.updateAvatar = (req, res) => {
         return res.status(ERROR_BAD_REQUEST).send({
           message: "Переданы некорректные данные при обновлении аватара",
         });
-      // if (err.name === "CastError")
-      //   return res
-      //     .status(ERROR_NOT_FOUND)
-      //     .send({ message: "Пользователь с указанным _id не найден" });
       res
         .status(OTHER_ERROR)
         .send(`Произошла неизвестная ошибка ${err.name}: ${err.message}`);

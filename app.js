@@ -13,14 +13,13 @@ mongoose.connect("mongodb://127.0.0.1/mestodb");
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "642c0bf809c98eefc507db63",
+    _id: "642d835d6a544a60740623c7",
   };
 
   next();
 });
 
-app.use("/users", require("./routes/users"));
-app.use("/cards", require("./routes/cards"));
+app.use("/", require("./routes/index"));
 app.use("*", function (req, res) {
   res
     .status(ERROR_NOT_FOUND)

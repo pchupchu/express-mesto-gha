@@ -5,7 +5,6 @@ const OTHER_ERROR = 500;
 
 module.exports.createCard = (req, res) => {
   const owner = req.user._id;
-  console.log(req.body);
   const { name, link } = req.body;
 
   Card.create({ name, link, owner })
@@ -23,6 +22,8 @@ module.exports.createCard = (req, res) => {
 
 module.exports.getCards = (req, res) => {
   Card.find({})
+    .populate("owner")
+    .populate("likes")
     .then((cards) => res.send({ data: cards }))
     .catch((err) =>
       res
@@ -58,6 +59,8 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
+    .populate("owner")
+    .populate("likes")
     .then((card) => {
       if (!card) {
         return res
@@ -83,6 +86,8 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
+    .populate("owner")
+    .populate("likes")
     .then((card) => {
       if (!card) {
         return res
