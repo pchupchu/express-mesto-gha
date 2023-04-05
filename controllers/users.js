@@ -34,10 +34,10 @@ module.exports.findById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError")
-        return res.status(ERROR_VALIDATION).send({
-          message: "Передан некорректный _id",
-        });
+      // if (err.name === "ValidationError")
+      //   return res.status(ERROR_VALIDATION).send({
+      //     message: "Передан некорректный _id",
+      //   });
       if (err.name === "CastError")
         return res
           .status(ERROR_ID)
