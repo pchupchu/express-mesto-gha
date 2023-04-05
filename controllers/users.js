@@ -7,7 +7,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError")
         return res.status(ERROR_BAD_REQUEST).send({
@@ -66,10 +66,10 @@ module.exports.updateUser = (req, res) => {
         return res.status(ERROR_BAD_REQUEST).send({
           message: "Переданы некорректные данные при обновлении профиля",
         });
-      if (err.name === "CastError")
-        return res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: "Пользователь с указанным _id не найден" });
+      // if (err.name === "CastError")
+      //   return res
+      //     .status(ERROR_NOT_FOUND)
+      //     .send({ message: "Пользователь с указанным _id не найден" });
       res
         .status(OTHER_ERROR)
         .send(`Произошла неизвестная ошибка ${err.name}: ${err.message}`);
@@ -90,10 +90,10 @@ module.exports.updateAvatar = (req, res) => {
         return res.status(ERROR_BAD_REQUEST).send({
           message: "Переданы некорректные данные при обновлении аватара",
         });
-      if (err.name === "CastError")
-        return res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: "Пользователь с указанным _id не найден" });
+      // if (err.name === "CastError")
+      //   return res
+      //     .status(ERROR_NOT_FOUND)
+      //     .send({ message: "Пользователь с указанным _id не найден" });
       res
         .status(OTHER_ERROR)
         .send(`Произошла неизвестная ошибка ${err.name}: ${err.message}`);

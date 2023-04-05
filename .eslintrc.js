@@ -1,6 +1,5 @@
 module.exports = {
   env: {
-    browser: true,
     es2021: true,
   },
   extends: "airbnb-base",
@@ -12,7 +11,6 @@ module.exports = {
   rules: {
     devDependencies: true,
     quotes: ["error", "double"],
-    "no-console": "off",
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
   },
 };
