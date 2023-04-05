@@ -30,7 +30,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.findById = (req, res) => {
-  User.find(req.params.id)
+  console.log(req.params);
+  User.findById(req.params.userId)
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === "ValidationError")
