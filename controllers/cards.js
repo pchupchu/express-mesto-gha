@@ -23,8 +23,7 @@ module.exports.createCard = (req, res) => {
 
 module.exports.getCards = (req, res) => {
   Card.find({})
-    .populate("owner")
-    .populate("likes")
+    .populate(["owner", "likes"])
     .then((cards) => res.send({ data: cards }))
     .catch((err) =>
       res
@@ -60,8 +59,7 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
-    .populate("owner")
-    .populate("likes")
+    .populate(["owner", "likes"])
     .then((card) => {
       if (!card) {
         return res
@@ -87,8 +85,7 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true }
   )
-    .populate("owner")
-    .populate("likes")
+    .populate(["owner", "likes"])
     .then((card) => {
       if (!card) {
         return res
