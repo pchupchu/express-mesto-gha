@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const ERROR_BAD_REQUEST = 400;
 const ERROR_NOT_FOUND = 404;
 const OTHER_ERROR = 500;
@@ -95,5 +96,20 @@ module.exports.updateAvatar = (req, res) => {
       res
         .status(OTHER_ERROR)
         .send(`Произошла неизвестная ошибка ${err.name}: ${err.message}`);
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, "super-strong-secret", {
+        expiresIn: "7d",
+      });
+
+      res.send({ token });
+    })
+    .catch((err) => {
+      res.status(401).send({ message: err.message });
     });
 };
