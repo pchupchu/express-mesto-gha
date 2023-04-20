@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { errors } = require("celebrate");
 
 const { PORT = 3000 } = process.env;
 
@@ -9,13 +10,12 @@ const ERROR_NOT_FOUND = 404;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect("mongodb://127.0.0.1/mestodb");
+mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use((req, res, next) => {
   req.user = {
-    _id: "642d835d6a544a60740623c7",
+    _id: "64417295266bde446d9728c7",
   };
-
   next();
 });
 
@@ -24,6 +24,15 @@ app.use("*", function (req, res) {
   res
     .status(ERROR_NOT_FOUND)
     .send({ message: "Запрашиваемый адрес не найден" });
+});
+app.use(errors());
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+
+  res.status(statusCode).send({
+    message: statusCode === 500 ? "На сервере произошла ошибка" : message,
+  });
+  next();
 });
 
 app.listen(PORT, () => {
