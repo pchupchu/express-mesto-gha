@@ -5,21 +5,34 @@ const jwt = require("jsonwebtoken");
 const BadRequest = require("../errors/bad-request");
 const NotFoundError = require("../errors/not-found-err");
 const Unauthorized = require("../errors/unauthorized");
+const Conflict = require("../errors/conflict");
 
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt.hash(password, 6).then((hash) => {
     User.create({ name, about, avatar, email, password: hash })
-      .then((user) => res.status(201).send({ data: user }))
+      .then((user) =>
+        res.status(201).send({
+          data: {
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          },
+        })
+      )
       .catch((err) => {
-        console.log("hello");
         if (err instanceof mongoose.Error.ValidationError) {
-          next(
+          return next(
             new BadRequest(
-              "Переданы некорректные данные при обновлении аватара"
+              "Переданы некорректные данные при создании пользователя"
             )
           );
-          return;
+        }
+        if (err.code === 11000) {
+          return next(
+            new Conflict("Пользователь с таким email уже существует")
+          );
         }
         next(err);
       });
@@ -42,10 +55,8 @@ module.exports.getUser = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      console.log(err.name);
       if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError("Переданы некорректные данные"));
-        return;
+        return next(new BadRequest("Переданы некорректные данные"));
       }
       next(err);
     });
@@ -55,12 +66,13 @@ module.exports.findById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        next(new NotFoundError("Пользователь по указанному _id не найден"));
+        return next(
+          new NotFoundError("Пользователь по указанному _id не найден")
+        );
       }
       res.send({ data: user });
     })
     .catch((err) => {
-      console.log(err.name);
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequest("Переданы некорректные данные"));
         return;
@@ -81,10 +93,9 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        next(
+        return next(
           new BadRequest("Переданы некорректные данные при обновлении профиля")
         );
-        return;
       }
       next(err);
     });
@@ -101,10 +112,9 @@ module.exports.updateAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        next(
+        return next(
           new BadRequest("Переданы некорректные данные при обновлении аватара")
         );
-        return;
       }
       next(err);
     });
@@ -114,7 +124,6 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user);
       const token = jwt.sign({ _id: user._id }, "super-strong-secret", {
         expiresIn: "7d",
       });
@@ -122,7 +131,6 @@ module.exports.login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      next(new Unauthorized("Неправильные почта или пароль"));
-      return;
+      return next(new Unauthorized("Неправильные почта или пароль"));
     });
 };
