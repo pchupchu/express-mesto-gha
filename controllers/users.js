@@ -49,9 +49,8 @@ module.exports.getUser = (req, res, next) => {
   User.findOne({ _id: req.user._id })
     .then((user) => {
       if (!user) {
-        throw new NotFoundError("Нет пользователя с таким id");
+        return next(new NotFoundError("Нет пользователя с таким id"));
       }
-
       res.send({ data: user });
     })
     .catch((err) => {
