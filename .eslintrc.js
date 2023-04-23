@@ -9,8 +9,13 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    devDependencies: true,
-    quotes: ['error', 'double'],
+    'import/no-extraneous-dependencies': 'off',
+    'comma-dangle': 'off',
+    'consistent-return': 'off',
+    'no-console': 'off',
+    'func-names': 'off',
+    'newline-per-chained-call': 'off',
+    'implicit-arrow-linebreak': 'off',
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
   },
 };

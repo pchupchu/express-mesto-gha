@@ -1,5 +1,5 @@
-const Card = require('../models/card');
 const mongoose = require('mongoose');
+const Card = require('../models/card');
 const BadRequest = require('../errors/bad-request');
 const NotFoundError = require('../errors/not-found-err');
 const Forbidden = require('../errors/forbidden');
@@ -39,8 +39,7 @@ module.exports.deleteCard = (req, res, next) => {
         );
       }
       return Card.findByIdAndDelete(req.params.cardId).then(() =>
-        res.send({ data: card })
-      );
+        res.send({ data: card }));
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
