@@ -13,7 +13,7 @@ module.exports.createCard = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(
-          new BadRequest('Переданы некорректные данные при создании карточки')
+          new BadRequest('Переданы некорректные данные при создании карточки'),
         );
       }
       next(err);
@@ -35,11 +35,10 @@ module.exports.deleteCard = (req, res, next) => {
       }
       if (card.owner.toString() !== req.user._id) {
         return next(
-          new Forbidden('Вы не можете удалить карточку другого пользователя')
+          new Forbidden('Вы не можете удалить карточку другого пользователя'),
         );
       }
-      return Card.findByIdAndDelete(req.params.cardId).then(() =>
-        res.send({ data: card }));
+      return Card.findByIdAndDelete(req.params.cardId).then(() => res.send({ data: card }));
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -53,7 +52,7 @@ module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -74,7 +73,7 @@ module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true }
+    { new: true },
   )
     .populate(['owner', 'likes'])
     .then((card) => {

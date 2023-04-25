@@ -8,9 +8,10 @@ const Conflict = require('../errors/conflict');
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, about, avatar, email, password
+    name, about, avatar, email, password,
   } = req.body;
   bcrypt
+
     .hash(password, 6)
     .then((hash) => {
       User.create({
@@ -20,26 +21,25 @@ module.exports.createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((user) =>
-          res.status(201).send({
-            data: {
-              name: user.name,
-              about: user.about,
-              avatar: user.avatar,
-              email: user.email,
-            },
-          }))
+        .then((user) => res.status(201).send({
+          data: {
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            email: user.email,
+          },
+        }))
         .catch((err) => {
           if (err instanceof mongoose.Error.ValidationError) {
             return next(
               new BadRequest(
-                'Переданы некорректные данные при создании пользователя'
-              )
+                'Переданы некорректные данные при создании пользователя',
+              ),
             );
           }
           if (err.code === 11000) {
             return next(
-              new Conflict('Пользователь с таким email уже существует')
+              new Conflict('Пользователь с таким email уже существует'),
             );
           }
           next(err);
@@ -75,7 +75,7 @@ module.exports.findById = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return next(
-          new NotFoundError('Пользователь по указанному _id не найден')
+          new NotFoundError('Пользователь по указанному _id не найден'),
         );
       }
       res.send({ data: user });
@@ -95,13 +95,13 @@ module.exports.updateUser = (req, res, next) => {
       name: req.body.name,
       about: req.body.about,
     },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(
-          new BadRequest('Переданы некорректные данные при обновлении профиля')
+          new BadRequest('Переданы некорректные данные при обновлении профиля'),
         );
       }
       next(err);
@@ -114,13 +114,13 @@ module.exports.updateAvatar = (req, res, next) => {
     {
       avatar: req.body.avatar,
     },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(
-          new BadRequest('Переданы некорректные данные при обновлении аватара')
+          new BadRequest('Переданы некорректные данные при обновлении аватара'),
         );
       }
       next(err);

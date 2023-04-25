@@ -21,11 +21,10 @@ const userSchema = new mongoose.Schema({
     default:
       'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) =>
-        validator.isURL(v, {
-          protocols: ['http', 'https'],
-          require_protocol: true,
-        }),
+      validator: (v) => validator.isURL(v, {
+        protocols: ['http', 'https'],
+        require_protocol: true,
+      }),
       message: 'Неправильный формат ссылки',
     },
   },
@@ -51,13 +50,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       if (!user) {
         return Promise.reject(
-          new Unauthorized('Неправильные почта или пароль')
+          new Unauthorized('Неправильные почта или пароль'),
         );
       }
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
           return Promise.reject(
-            new Unauthorized('Неправильные почта или пароль')
+            new Unauthorized('Неправильные почта или пароль'),
           );
         }
         return user;
